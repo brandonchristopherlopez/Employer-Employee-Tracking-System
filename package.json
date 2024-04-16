@@ -1,0 +1,11 @@
+{
+  "name": "employertrackingsystem",
+  "version": "1.0.0",
+  "description": "Employee Tracking System used by Employers to track employees in different department ",
+  "main": "connection.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "BL",
+  "license": "ISC"
+}
