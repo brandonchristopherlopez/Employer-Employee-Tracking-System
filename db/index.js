@@ -29,3 +29,37 @@ class Database {
     return this.connection.promise().query(query);
   }
 
+  // Retrieve all employees except the given ID
+  fetchPossibleManagers(ID) {
+    const query = `
+      SELECT 
+        id, 
+        first_name, 
+        last_name 
+      FROM 
+        employee 
+      WHERE 
+        id != ?;
+    `;
+    return this.connection.promise().query(query, [ID]);
+  }
+
+  // For Employers use to add new employee into database
+  addEmployee(ID) {
+    return this.connection.promise().query("INSERT INTO employee SET ?", ID);
+  }
+
+   // if an employee is terminated, resigns, etc. Use to delete employee
+   deleteEmployee(ID) {
+    return this.connection.promise().query(
+      "DELETE FROM employee WHERE id = ?",
+      ID
+    );
+  }
+
+  // Update role of an employee
+  modifyEmployeeRole(ID, roleID) {
+    return this.connection.promise().query("UPDATE employee SET role_id = ? WHERE id = ?", [roleID, ID]);
+  }
+
+
