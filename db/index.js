@@ -125,3 +125,45 @@ class Database {
   deleteDepartment(ID) {
     return this.connection.promise().query("DELETE FROM department WHERE id = ?", [ID]);
   }
+  // Find Employees in specific department
+  fetchEmployeesByDepartment(ID) {
+    const query = `
+      SELECT 
+        employee.id, 
+        employee.first_name, 
+        employee.last_name, 
+        role.title 
+      FROM 
+        employee
+      LEFT JOIN 
+        role ON employee.role_id = role.id
+      LEFT JOIN 
+        department ON role.department_id = department.id
+      WHERE 
+        department.id = ?;
+    `;
+    return this.connection.promise().query(query, [ID]);
+  }
+  // Find all employees under a specific manager
+  fetchEmployeesByManager(managerId) {
+    const query = `
+      SELECT 
+        employee.id, 
+        employee.first_name, 
+        employee.last_name, 
+        department.name AS department, 
+        role.title 
+      FROM 
+        employee
+      LEFT JOIN 
+        role ON role.id = employee.role_id
+      LEFT JOIN 
+        department ON department.id = role.department_id
+      WHERE 
+        manager_id = ?;
+    `;
+    return this.connection.promise().query(query, [managerId]);
+  }
+}
+
+module.exports = new Database(connection);
