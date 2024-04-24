@@ -145,6 +145,226 @@ function deleteEmployee() {
         })
         .then(() => promptUserForNextAction()); 
 }
+// Function to update an employee's role
+function updateEmployeeRole() {
+    // Fetch all employees
+    db.findAllEmployees()
+        .then(processEmployeeChoices)
+        .then(promptForEmployeeId)
+        .then(promptForRoleId)
+        .then(updateEmployeeRoleInDatabase)
+        .then(notifySuccess)
+        .then(loadMainPrompts)
+        .catch(handleError);
+}
 
-//NEXT
+// Function to process employees and create employee choices
+function processEmployeeChoices([rows]) {
+    let employees = rows;
+    const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+        name: `${first_name} ${last_name}`,
+        value: id
+    }));
+    return employeeChoices;
+}
 
+// Function to prompt user to select an employee
+function promptForEmployeeId(employeeChoices) {
+    return prompt([
+        {
+            type: "list",
+            name: "employeeId",
+            message: "Which employee's role do you want to update?",
+            choices: employeeChoices
+        }
+    ]);
+}
+
+// Function to prompt user to select a role
+function promptForRoleId({ employeeId }) {
+    // Fetch all roles
+    return db.findAllRoles()
+        .then(([rows]) => {
+            const roleChoices = rows.map(({ id, title }) => ({
+                name: title,
+                value: id
+            }));
+
+            return prompt([
+                {
+                    type: "list",
+                    name: "roleId",
+                    message: "Which role do you want to assign the selected employee?",
+                    choices: roleChoices
+                }
+            ]).then(({ roleId }) => ({ employeeId, roleId }));
+        });
+}
+
+// Function to update an employee's role in the database
+function updateEmployeeRoleInDatabase({ employeeId, roleId }) {
+    return db.updateEmployeeRole(employeeId, roleId);
+}
+
+// Function to notify user of successful role update
+function notifySuccess() {
+    console.log("Updated employee's role");
+}
+
+// Function to handle errors during the process
+function handleError(error) {
+    console.error("An error occurred:", error);
+}
+
+// Call the function when you want to update an employee's role
+// updateEmployeeRole();
+
+// Function to update an employee's manager
+function updateEmployeeManager() {
+    db.findAllEmployees()
+        .then(processEmployeeChoices)
+        .then(promptForEmployeeId)
+        .then(promptForManagerId)
+        .then(updateManagerInDatabase)
+        .then(notifySuccess)
+        .then(loadMainPrompts)
+        .catch(handleError);
+}
+
+// Function to process employees and create choices for prompt
+function processEmployeeChoices([rows]) {
+    let employees = rows;
+    return employees.map(({ id, first_name, last_name }) => ({
+        name: `${first_name} ${last_name}`,
+        value: id
+    }));
+}
+
+// Function to prompt user to select an employee
+function promptForEmployeeId(employeeChoices) {
+    return prompt([
+        {
+            type: "list",
+            name: "employeeId",
+            message: "Which employee's manager do you want to update?",
+            choices: employeeChoices
+        }
+    ]);
+}
+
+// Function to prompt user to select a manager for the chosen employee
+function promptForManagerId({ employeeId }) {
+    // Fetch possible managers for the selected employee
+    return db.findAllPossibleManagers(employeeId)
+        .then(([rows]) => {
+            const managerChoices = rows.map(({ id, first_name, last_name }) => ({
+                name: `${first_name} ${last_name}`,
+                value: id
+            }));
+
+            return prompt([
+                {
+                    type: "list",
+                    name: "managerId",
+                    message: "Who should be the new manager for the selected employee?",
+                    choices: managerChoices
+                }
+            ]).then(({ managerId }) => ({ employeeId, managerId }));
+        });
+}
+
+// Function to update the manager in the database
+function updateManagerInDatabase({ employeeId, managerId }) {
+    return db.updateEmployeeManager(employeeId, managerId);
+}
+
+// Function to notify the user of a successful update
+function notifySuccess() {
+    console.log("Updated employee's manager successfully.");
+}
+
+// Function to handle errors during the process
+function handleError(error) {
+    console.error("An error occurred during the process:", error);
+}
+// Function to view all roles
+function viewRoles() {
+    // Fetch all roles from the database
+    db.findAllRoles()
+        .then(displayRoles)
+        .then(loadMainPrompts)
+        .catch(handleError);
+}
+
+// Function to display roles in a table format
+function displayRoles([rows]) {
+    console.log("\n");
+    console.table(rows);
+}
+
+// Function to handle errors during the process
+function handleError(error) {
+    console.error("An error occurred while retrieving roles:", error);
+}
+
+// Export functions or call the function to view roles as needed
+// viewRoles();
+
+// Function to add a new role
+function addRole() {
+    // Fetch all departments to provide choices for the prompt
+    db.findAllDepartments()
+        .then(processDepartmentChoices)
+        .then(promptForRoleDetails)
+        .then(addRoleToDatabase)
+        .then(notifySuccess)
+        .then(loadMainPrompts)
+        .catch(handleError);
+}
+
+// Function to process departments and create choices for prompt
+function processDepartmentChoices([rows]) {
+    let departments = rows;
+    return departments.map(({ id, name }) => ({
+        name: name,
+        value: id
+    }));
+}
+
+// Function to prompt the user for the details of the new role
+function promptForRoleDetails(departmentChoices) {
+    return prompt([
+        {
+            name: "title",
+            message: "What is the name of the role?"
+        },
+        {
+            name: "salary",
+            message: "What is the salary of the role?"
+        },
+        {
+            type: "list",
+            name: "department_id",
+            message: "Which department does the role belong to?",
+            choices: departmentChoices
+        }
+    ]);
+}
+
+// Function to add the new role to the database
+function addRoleToDatabase(roleDetails) {
+    return db.createRole(roleDetails);
+}
+
+// Function to notify the user of a successful role addition
+function notifySuccess(roleDetails) {
+    console.log(`Added ${roleDetails.title} to the database`);
+}
+
+// Function to handle errors during the process
+function handleError(error) {
+    console.error("An error occurred while adding the role:", error);
+}
+
+// Export functions or call the function to add a new role as needed
+// addRole();
