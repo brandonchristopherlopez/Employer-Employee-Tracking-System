@@ -1,11 +1,34 @@
 {
-  "name": "employertrackingsystem",
+  "name": "companysemployeetracker",
   "version": "1.0.0",
-  "description": "Employee Tracking System used by Employers to track employees in different department ",
-  "main": "connection.js",
+  "description": "AS A business owner",
+  "main": "manage the departments, roles, and employees in my company",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index"
   },
-  "author": "BL",
-  "license": "ISC"
+  "dependencies": {
+    "asciiart-logo": "^0.2.6",
+    "inquirer": "8.2.4",
+    "mysql2": "^2.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandonchristopherlopez/Challenge-12.git"
+  },
+  "keywords": [
+    "employee",
+    "tracker",
+    "company",
+    "business",
+    "remote",
+    "work",
+    "quantify",
+    "results"
+  ],
+  "author": "Brandon Lopez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brandonchristopherlopez/Challenge-12/issues"
+  },
+  "homepage": "https://github.com/brandonchristopherlopez/Challenge-12#readme"
 }
